@@ -1,0 +1,85 @@
+# Implementation Plan - Aarogya360 Multi-Tenant Database Layer
+
+This plan outlines the design and implementation of the database models (SQLAlchemy), data schemas (Pydantic), and tenant isolation middleware/dependency injection using FastAPI.
+
+## User Review Required
+
+> [!IMPORTANT]
+> - **Multi-Tenancy Strategy**: We will implement **column-based multi-tenancy** (shared database, shared schema) using the `clinic_id` column as the tenant discriminator, since almost all entities in the schema explicitly reference `clinic_id`.
+> - **Tenant Isolation**: We will provide a FastAPI dependency `get_current_tenant_id` and a multi-tenant DB session wrapper/filter to ensure that queries are always scoped to the active tenant clinic.
+> - **SQL Injection Prevention**: All queries will use SQLAlchemy ORM or parameterized SQLAlchemy query constructors. Raw SQL queries will be strictly avoided.
+
+## Proposed Changes
+
+### Database Configuration
+
+#### [MODIFY] [database.py](file:///d:/Aarogya360/backend/database/database.py)
+- Define the SQLAlchemy engine and `SessionLocal` factory.
+- Use PostgreSQL-compatible configurations (or SQLite fallback for testing).
+
+#### [MODIFY] [session.py](file:///d:/Aarogya360/backend/database/session.py)
+- Create `get_db` FastAPI dependency.
+- Integrate tenant-specific session filters or context variables to automatically scope queries.
+
+#### [MODIFY] [base.py](file:///d:/Aarogya360/backend/database/models/base.py)
+- Define the SQLAlchemy declarative base `Base`.
+- Add common mixins (e.g., `TimestampMixin`, `SoftDeleteMixin`) to keep models DRY.
+
+### SQLAlchemy Models
+
+#### [MODIFY] [clinic.py](file:///d:/Aarogya360/backend/database/models/clinic.py)
+- `SubscriptionPlan`
+- `Clinic`
+- `ClinicWorkingHours`
+- `Department`
+
+#### [MODIFY] [user.py](file:///d:/Aarogya360/backend/database/models/user.py)
+- `Role`
+- `Permission`
+- `role_permissions` (association table)
+- `User`
+- `UserMFA`
+- `StaffInvitation`
+- `RefreshToken`
+- `UserSession`
+
+#### [MODIFY] [doctor.py](file:///d:/Aarogya360/backend/database/models/doctor.py)
+- `Doctor`
+- `DoctorAvailability`
+- `DoctorLeave`
+
+#### [MODIFY] [patient.py](file:///d:/Aarogya360/backend/database/models/patient.py)
+- `Patient`
+- `ClinicPatient` (association table)
+- `GuardianConsent`
+
+#### [MODIFY] [notification.py](file:///d:/Aarogya360/backend/database/models/notification.py)
+- `NotificationPreference`
+
+#### [MODIFY] [appointment.py](file:///d:/Aarogya360/backend/database/models/appointment.py)
+- `Appointment`
+
+#### [MODIFY] [audit_log.py](file:///d:/Aarogya360/backend/database/models/audit_log.py)
+- `AuditLog`
+
+### Pydantic Schemas
+
+#### [NEW] [schemas.py](file:///d:/Aarogya360/backend/database/schemas.py)
+- Build Pydantic schemas for all entities supporting CRUD operations (Create, Read, Update, Delete).
+- Include strict input validation (regex for phone numbers, email validation, pincode constraints, GSTIN validation) to prevent injection and bad data.
+- Ensure correct data type validation (UUID, datetime, decimal, etc.).
+
+### Multi-Tenancy Core
+
+#### [MODIFY] [tenant.py](file:///d:/Aarogya360/backend/app/core/tenant.py)
+- Implement extraction of `clinic_id` from request headers (e.g., `X-Clinic-ID`) or JWT token.
+- Provide dependencies for scoping database queries.
+
+## Verification Plan
+
+### Automated Tests
+- Write a simple test suite using `pytest` to verify:
+  - Session creation.
+  - Multi-tenant data isolation (ensuring clinic A cannot query clinic B's data).
+  - Validation rules on Pydantic models.
+  - SQL injection immunity using SQL injection payloads.
