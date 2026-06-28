@@ -56,13 +56,3 @@ class SoftDeleteMixin:
     def is_deleted(self) -> bool:
         return self.deleted_at is not None
 
-# Import all models here so that they are registered on Base.metadata
-# for Alembic or create_all()
-from backend.database.models.clinic import SubscriptionPlan, Clinic, ClinicWorkingHours, Department
-from backend.database.models.user import Role, Permission, role_permissions, User, UserMFA, StaffInvitation, RefreshToken, UserSession
-from backend.database.models.doctor import Doctor, DoctorAvailability, DoctorLeave
-from backend.database.models.patient import Patient, ClinicPatient, GuardianConsent
-from backend.database.models.notification import NotificationPreference
-from backend.database.models.appointment import Appointment
-from backend.database.models.audit_log import AuditLog
-

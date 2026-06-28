@@ -1,28 +1,16 @@
 import pytest
-from datetime import datetime, date, time, timedelta
-from decimal import Decimal
+from datetime import date
 from uuid import uuid4
 from pydantic import ValidationError
 from sqlalchemy import select
 
-from backend.database.database import engine
-from backend.database.models.base import Base
-from backend.database.models.clinic import Clinic, SubscriptionPlan, Department
-from backend.database.models.user import User, Role
-from backend.database.models.patient import Patient
-from backend.database.models.appointment import Appointment
+from backend.database.models.clinic import Clinic, Department
+from backend.database.models.user import User
 from backend.database.database import SessionLocal
-from backend.app.core.tenant import set_tenant_id, get_tenant_id
-from backend.database.schemas import ClinicCreate, UserCreate, DoctorLeaveCreate, AppointmentCreate
-import backend.database.session  # Register event hooks
+from backend.app.core.tenant import set_tenant_id
+from backend.database.schemas import ClinicCreate, DoctorLeaveCreate
+import backend.database.database  # Register tenant scoping event hooks
 
-
-@pytest.fixture(scope="module", autouse=True)
-def setup_db():
-    # Create the tables in SQLite for testing
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture
 def db_session():
