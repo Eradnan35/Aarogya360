@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 228 100% 99%; /* #faf8ff */
+    --foreground: 220 41% 13%; /* #131b2e */
+
+    --card: 0 0% 100%; /* #ffffff */
+    --card-foreground: 220 41% 13%; /* #131b2e */
+
+    --popover: 0 0% 100%; /* #ffffff */
+    --popover-foreground: 220 41% 13%; /* #131b2e */
+
+    --primary: 216 100% 40%; /* #0050cb */
+    --primary-foreground: 0 0% 100%; /* #ffffff */
+    --primary-container: 216 100% 50%; /* #0066ff */
+    --on-primary-container: 240 100% 99%; /* #f8f7ff */
+
+    --secondary: 210 8% 37%; /* #585f66 */
+    --secondary-foreground: 0 0% 100%; /* #ffffff */
+    --secondary-container: 210 20% 89%; /* #dce3eb */
+    --on-secondary-container: 210 7% 39%; /* #5e656c */
+
+    --muted: 210 20% 89%; /* #dce3eb */
+    --muted-foreground: 220 13% 30%; /* #424656 */
+
+    --accent: 216 100% 50% / 0.1;
+    --accent-foreground: 216 100% 40%;
+
+    --destructive: 0 75% 42%; /* #ba1a1a */
+    --destructive-foreground: 0 0% 100%; /* #ffffff */
+
+    --border: 228 24% 80%; /* #c2c6d8 */
+    --input: 228 24% 80%; /* #c2c6d8 */
+    --ring: 216 100% 40%;
+
+    /* Custom Surface Container Tokens */
+    --surface-lowest: 0 0% 100%; /* #ffffff */
+    --surface-low: 240 100% 98%; /* #f2f3ff */
+    --surface-container: 231 100% 96%; /* #eaedff */
+    --surface-high: 228 100% 94%; /* #e2e7ff */
+    --surface-highest: 228 92% 92%; /* #dae2fd */
+
+    --radius: 0.25rem; /* ROUND_FOUR */
+  }
+
+  .dark {
+    --background: 220 40% 6%;
+    --foreground: 228 60% 99%;
+
+    --card: 220 40% 8%;
+    --card-foreground: 228 60% 99%;
+
+    --popover: 220 40% 8%;
+    --popover-foreground: 228 60% 99%;
+
+    --primary: 216 100% 60%;
+    --primary-foreground: 220 40% 6%;
+    --primary-container: 216 100% 50%;
+    --on-primary-container: 240 100% 99%;
+
+    --secondary: 210 8% 70%;
+    --secondary-foreground: 220 40% 6%;
+    --secondary-container: 220 20% 15%;
+    --on-secondary-container: 210 8% 80%;
+
+    --muted: 220 20% 15%;
+    --muted-foreground: 228 10% 70%;
+
+    --accent: 216 100% 60% / 0.15;
+    --accent-foreground: 216 100% 60%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 216 100% 60%;
+
+    --surface-lowest: 220 40% 4%;
+    --surface-low: 220 40% 8%;
+    --surface-container: 220 30% 12%;
+    --surface-high: 220 30% 15%;
+    --surface-highest: 220 30% 18%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--secondary) / 0.5);
+}
